@@ -1,3 +1,12 @@
 from django.shortcuts import render
 
-# Create your views here.
+from django.views.generic import(
+    ListView,
+    DetailView,
+)
+
+
+
+class IdeaListView(ListView):
+    template_name = 'blog/home.html'
+
