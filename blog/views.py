@@ -13,6 +13,10 @@ class IdeaListView(ListView):
     template_name = 'blog/home.html'
     context_object_name = 'ideas'
     ordering = ['-date_posted']
+
+
+class IdeaDetailView(DetailView):
+    model = Idea
     
 
 def about(request):

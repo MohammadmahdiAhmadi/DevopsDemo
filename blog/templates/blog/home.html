@@ -9,7 +9,7 @@
             <a class="mr-2" href="">{{ idea.author }}</a>
             <small class="text-muted">{{ idea.date_posted|date:"F d, Y" }}</small>
         </div>
-        <h2><a class="article-title" href="">{{ idea.title }}</a></h2>
+        <h2><a class="article-title" href="{% url 'idea-detail' idea.id %}">{{ idea.title }}</a></h2>
         <p class="article-content">{{ idea.content }}</p>
     </div>
     </article>
