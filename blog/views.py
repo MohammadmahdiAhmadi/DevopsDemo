@@ -13,6 +13,8 @@ class IdeaListView(ListView):
     template_name = 'blog/home.html'
     context_object_name = 'ideas'
     ordering = ['-date_posted']
+    paginate_by = 2
+    
 
 
 class IdeaDetailView(DetailView):
