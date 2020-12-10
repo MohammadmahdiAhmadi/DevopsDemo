@@ -12,6 +12,9 @@
     </div>
     <h2><a class="article-title" href="">{{ object.title }}</a></h2>
     <p class="article-content">{{ object.content }}</p>
+    {% if object.author.username == user.username %}
+        <a class="btn btn-secondary btn-sm mt-1 mb-1" href="{% url 'idea-update' object.id %}">Update</a>
+    {% endif %}
 </div>
 </article>
 
