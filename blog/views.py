@@ -6,6 +6,7 @@ from django.views.generic import(
     DetailView,
     CreateView,
     UpdateView,
+    DeleteView,
 )
 from .models import Idea
 
@@ -41,8 +42,19 @@ class IdeaUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
         return super().form_valid(form)
 
     def test_func(self):
-        post = self.get_object()
-        if self.request.user == post.author:
+        idea = self.get_object()
+        if self.request.user == idea.author:
+            return True
+        return False
+
+
+class IdeaDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
+    model = Idea
+    success_url = '/'
+
+    def test_func(self):
+        idea = self.get_object()
+        if self.request.user == idea.author:
             return True
         return False
 
