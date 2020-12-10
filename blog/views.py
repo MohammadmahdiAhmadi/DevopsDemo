@@ -11,6 +11,8 @@ from django.views.generic import(
 from .models import Idea
 from django.contrib.auth.models import User
 
+from django.contrib.auth.decorators import login_required
+from django.http import HttpResponse
 
 
 class IdeaListView(ListView):
@@ -73,4 +75,17 @@ class UserIdeaListView(ListView):
 
 def about(request):
     return render(request, 'blog/about.html', {'title': 'About'})
-    
+
+
+@login_required
+def likeIdea(request):
+        if request.method == 'GET':
+
+            idea_id = request.GET['idea_id']
+            likedidea = Idea.objects.get(pk=idea_id) #getting the liked posts
+            likedidea.like += 1
+            likedidea.save()
+            return HttpResponse(likedidea.like) # Sending an success response
+
+        else:
+            return HttpResponse("Request method is not a GET")

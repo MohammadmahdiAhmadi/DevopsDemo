@@ -19,4 +19,5 @@ urlpatterns = [
     path('idea/<int:pk>/delete', IdeaDeleteView.as_view(), name='idea-delete'),
     path('user/<str:username>/', UserIdeaListView.as_view(), name='user-ideas'),
     path('about/', views.about, name = 'about'),
+    path('likeIdea/', views.likeIdea, name='likeIdea'),
 ]

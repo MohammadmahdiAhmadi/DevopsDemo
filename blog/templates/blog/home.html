@@ -12,6 +12,15 @@
         </div>
         <h2><a class="article-title" href="{% url 'idea-detail' idea.id %}">{{ idea.title }}</a></h2>
         <p class="article-content">{{ idea.content }}</p>
+        
+
+        {% if user.is_authenticated %}
+          <input class="btn btn-outline-secondary likebutton" type="button" id="like{{idea.id}}" name="{{ idea.id }}" value="{{ idea.like }} Like" />
+        {% else %}
+          <a class="btn btn-outline-secondary" href="/login">{{ idea.like }}Like</a>
+        {% endif %}
+
+
     </div>
     </article>
 {% endfor %}
@@ -39,5 +48,26 @@
     
 {% endblock content %}
 
-    
+{% block javascript %}
+  <script type="text/javascript">
+    $('.likebutton').click(function(){
+      var catid;
+      catid = $(this).attr("name");
+      $.ajax(
+        {
+         type:"GET",
+          url: "/likeIdea",
 
+         data:{
+           idea_id: catid
+         },
+
+         success: function( data ){
+           $( '#like'+ catid ).val(data+ ' Like');
+          }
+      })
+
+    });
+  </script>
+  
+{% endblock javascript %}
