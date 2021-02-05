@@ -10,6 +10,7 @@ class Idea(models.Model):
     date_posted = models.DateTimeField(default=timezone.now)
     author = models.ForeignKey(User, on_delete=models.CASCADE)
     likes = models.ManyToManyField(User, related_name='blogpost_like')
+    dislikes = models.ManyToManyField(User, related_name='blogpost_dislike')
 
     def __str__(self):
         return self.title
@@ -19,6 +20,9 @@ class Idea(models.Model):
 
     def number_of_likes(self):
         return self.likes.count()
+
+    def number_of_dislikes(self):
+        return self.dislikes.count()
 
 
     

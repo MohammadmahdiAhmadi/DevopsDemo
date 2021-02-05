@@ -21,6 +21,10 @@
           <i class="fa fa-thumbs-up likebutton" name="{{ object.id }}"></i>
           <p id="like{{object.id}}">{{ number_of_likes }}</p>
         </div>
+        <div class="col-md-1">
+          <i class="fa fa-thumbs-down dislikebutton" name="{{ object.id }}"></i>
+          <p id="dislike{{object.id}}">{{ object.dislikes.count }}</p>
+        </div>
       </div>
       
 
@@ -32,6 +36,12 @@
             <i class="fa fa-thumbs-up"></i>
           </a>
           <p>{{ number_of_likes }}</p>
+        </div>
+        <div class="col-md-1">
+          <a href="/login">
+            <i class="fa fa-thumbs-down"></i>
+          </a>
+          <p>{{ object.dislikes.count }}</p>
         </div>
         </div>
 
@@ -64,6 +74,24 @@
 
          success: function( data ){
            $( '#like'+ catid ).text(data);
+          }
+      })
+
+    });
+    $('.dislikebutton').click(function(){
+      var catid;
+      catid = $(this).attr("name");
+      $.ajax(
+        {
+         type:"GET",
+          url: "/dislikeIdea",
+
+         data:{
+           idea_id: catid
+         },
+
+         success: function( data ){
+           $( '#dislike'+ catid ).text(data);
           }
       })
 

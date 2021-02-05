@@ -104,3 +104,21 @@ def likeIdea(request):
 
     else:
         return HttpResponse("Request method is not a GET")
+
+
+@login_required
+def dislikeIdea(request):
+    if request.method == 'GET':
+
+        idea_id = request.GET['idea_id']
+        dislikedidea = Idea.objects.get(pk=idea_id) #getting the liked idea
+
+        if dislikedidea.dislikes.filter(id=request.user.id).exists():
+            dislikedidea.dislikes.remove(request.user)
+        else:
+            dislikedidea.dislikes.add(request.user)
+                
+        return HttpResponse(dislikedidea.number_of_dislikes()) # Sending an success response
+
+    else:
+        return HttpResponse("Request method is not a GET")
