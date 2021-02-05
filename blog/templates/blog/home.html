@@ -12,13 +12,31 @@
         </div>
         <h2><a class="article-title" href="{% url 'idea-detail' idea.id %}">{{ idea.title }}</a></h2>
         <p class="article-content">{{ idea.content }}</p>
+
+
+      {% if user.is_authenticated %}
+
+        <div class="row">
+          <div class="col-md-1">
+            <i class="fa fa-thumbs-up likebutton" name="{{ idea.id }}"></i>
+            <p id="like{{idea.id}}">{{ idea.likes.count }}</p>
+          </div>
+
+        </div>
         
 
-        {% if user.is_authenticated %}
-          <input class="btn btn-outline-secondary likebutton" type="button" id="like{{idea.id}}" name="{{ idea.id }}" value="{{ idea.like }} Like" />
-        {% else %}
-          <a class="btn btn-outline-secondary" href="/login">{{ idea.like }}Like</a>
-        {% endif %}
+      {% else %}
+
+          <div class="row">
+          <div class="col-md-1">
+            <a href="/login">
+              <i class="fa fa-thumbs-up"></i>
+            </a>
+            <p>{{ idea.likes.count }}</p>
+          </div>
+          </div>
+          
+      {% endif %}
 
 
     </div>
@@ -48,6 +66,7 @@
     
 {% endblock content %}
 
+
 {% block javascript %}
   <script type="text/javascript">
     $('.likebutton').click(function(){
@@ -63,11 +82,13 @@
          },
 
          success: function( data ){
-           $( '#like'+ catid ).val(data+ ' Like');
+           $( '#like'+ catid ).text(data);
           }
       })
 
     });
+
   </script>
   
 {% endblock javascript %}
+

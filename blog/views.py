@@ -12,8 +12,8 @@ from .models import Idea
 from django.contrib.auth.models import User
 
 from django.contrib.auth.decorators import login_required
-from django.http import HttpResponse
-
+from django.http import HttpResponse, HttpResponseRedirect
+from django.urls import reverse
 
 class IdeaListView(ListView):
     model = Idea
@@ -21,10 +21,21 @@ class IdeaListView(ListView):
     context_object_name = 'ideas'
     ordering = ['-date_posted']
     paginate_by = 10
-    
+
 
 class IdeaDetailView(DetailView):
     model = Idea
+
+    def get_context_data(self, **kwargs):
+        data = super().get_context_data(**kwargs)
+
+        likes_connected = get_object_or_404(Idea, id=self.kwargs['pk'])
+        liked = False
+        if likes_connected.likes.filter(id=self.request.user.id).exists():
+            liked = True
+        data['number_of_likes'] = likes_connected.number_of_likes()
+        data['idea_is_liked'] = liked
+        return data
 
 
 class IdeaCreateView(LoginRequiredMixin, CreateView):
@@ -79,13 +90,17 @@ def about(request):
 
 @login_required
 def likeIdea(request):
-        if request.method == 'GET':
+    if request.method == 'GET':
 
-            idea_id = request.GET['idea_id']
-            likedidea = Idea.objects.get(pk=idea_id) #getting the liked posts
-            likedidea.like += 1
-            likedidea.save()
-            return HttpResponse(likedidea.like) # Sending an success response
+        idea_id = request.GET['idea_id']
+        likedidea = Idea.objects.get(pk=idea_id) #getting the liked idea
 
+        if likedidea.likes.filter(id=request.user.id).exists():
+            likedidea.likes.remove(request.user)
         else:
-            return HttpResponse("Request method is not a GET")
+            likedidea.likes.add(request.user)
+                
+        return HttpResponse(likedidea.number_of_likes()) # Sending an success response
+
+    else:
+        return HttpResponse("Request method is not a GET")

@@ -12,6 +12,32 @@
     </div>
     <h2><a class="article-title" href="">{{ object.title }}</a></h2>
     <p class="article-content">{{ object.content }}</p>
+
+
+    {% if user.is_authenticated %}
+
+      <div class="row">
+        <div class="col-md-1">
+          <i class="fa fa-thumbs-up likebutton" name="{{ object.id }}"></i>
+          <p id="like{{object.id}}">{{ number_of_likes }}</p>
+        </div>
+      </div>
+      
+
+    {% else %}
+
+        <div class="row">
+        <div class="col-md-1">
+          <a href="/login">
+            <i class="fa fa-thumbs-up"></i>
+          </a>
+          <p>{{ number_of_likes }}</p>
+        </div>
+        </div>
+
+    {% endif %}
+
+
     {% if object.author.username == user.username %}
         <a class="btn btn-secondary btn-sm mt-1 mb-1" href="{% url 'idea-update' object.id %}">Update</a>
         <a class="btn btn-danger btn-sm mt-1 mb-1" href="{% url 'idea-delete' object.id %}">Delete</a>
@@ -21,3 +47,28 @@
 
     
 {% endblock content %}
+
+{% block javascript %}
+  <script type="text/javascript">
+    $('.likebutton').click(function(){
+      var catid;
+      catid = $(this).attr("name");
+      $.ajax(
+        {
+         type:"GET",
+          url: "/likeIdea",
+
+         data:{
+           idea_id: catid
+         },
+
+         success: function( data ){
+           $( '#like'+ catid ).text(data);
+          }
+      })
+
+    });
+
+  </script>
+  
+{% endblock javascript %}
