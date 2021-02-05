@@ -1,4 +1,4 @@
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, redirect
 
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.views.generic import(
@@ -15,6 +15,8 @@ from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse, HttpResponseRedirect
 from django.urls import reverse
 
+from .forms import CommentForm
+
 class IdeaListView(ListView):
     model = Idea
     template_name = 'blog/home.html'
@@ -28,13 +30,41 @@ class IdeaDetailView(DetailView):
 
     def get_context_data(self, **kwargs):
         data = super().get_context_data(**kwargs)
+        thisIdea = get_object_or_404(Idea, id=self.kwargs['pk'])
 
-        likes_connected = get_object_or_404(Idea, id=self.kwargs['pk'])
+
+        #Like button
         liked = False
-        if likes_connected.likes.filter(id=self.request.user.id).exists():
+        if thisIdea.likes.filter(id=self.request.user.id).exists():
             liked = True
-        data['number_of_likes'] = likes_connected.number_of_likes()
+        data['number_of_likes'] = thisIdea.number_of_likes()
         data['idea_is_liked'] = liked
+
+
+        #Comments
+        comments = thisIdea.comments.filter(active=True)
+        new_comment = None
+        
+        # Comment posted
+        if self.request.method == 'POST':
+            # comment_form = CommentForm(data=self.request.POST)
+            comment_form = CommentForm(self.request.POST, instance=self.request.POST)
+            if comment_form.is_valid():
+
+                # Create Comment object but don't save to database yet
+                new_comment = comment_form.save(commit=False)
+                # Assign the current idea to the comment
+                new_comment.Idea = thisIdea
+                # Save the comment to the database
+                new_comment.save()
+        else:
+            comment_form = CommentForm()
+
+        data['comments'] = comments
+        data['new_comment'] = new_comment
+        data['comment_form'] = comment_form
+
+
         return data
 
 
