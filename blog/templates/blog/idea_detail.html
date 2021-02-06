@@ -48,6 +48,8 @@
 
     {% endif %}
 
+    <p>{{ object.views }} <i class="fa fa-eye" style="font-size: 1em;"></i></p>
+
 
     {% if object.author.username == user.username %}
         <a class="btn btn-secondary btn-sm mt-1 mb-1" href="{% url 'idea-update' object.id %}">Update</a>

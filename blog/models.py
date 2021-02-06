@@ -11,6 +11,7 @@ class Idea(models.Model):
     author = models.ForeignKey(User, on_delete=models.CASCADE)
     likes = models.ManyToManyField(User, related_name='blogpost_like')
     dislikes = models.ManyToManyField(User, related_name='blogpost_dislike')
+    views = models.IntegerField(default=0)
 
     def __str__(self):
         return self.title

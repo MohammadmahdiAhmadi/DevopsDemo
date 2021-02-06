@@ -69,6 +69,10 @@ def IdeaDetailView(request, pk):
     liked = False
     if thisIdea.likes.filter(id=request.user.id).exists():
         liked = True
+    
+    #Counting views
+    thisIdea.views = thisIdea.views + 1
+    thisIdea.save()
 
     context = {
         'object': thisIdea,
