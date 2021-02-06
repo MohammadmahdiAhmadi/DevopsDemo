@@ -22,7 +22,7 @@ class IdeaListView(ListView):
     template_name = 'blog/home.html'
     context_object_name = 'ideas'
     ordering = ['-date_posted']
-    paginate_by = 10
+    paginate_by = 5
 
 
 # class IdeaDetailView(DetailView):
@@ -80,7 +80,6 @@ def IdeaDetailView(request, pk):
         'number_of_likes': thisIdea.number_of_likes(),
         'idea_is_liked': liked
     }
-
 
     return render(request, template_name, context)
 
