@@ -3,7 +3,7 @@ from django.urls import path
 from . import views
 from .views import(
     IdeaListView,
-    IdeaDetailView,
+    # IdeaDetailView,
     IdeaCreateView,
     IdeaUpdateView,
     IdeaDeleteView,
@@ -13,7 +13,7 @@ from .views import(
 
 urlpatterns = [
     path('', IdeaListView.as_view(), name = 'home'),
-    path('idea/<int:pk>/', IdeaDetailView.as_view(), name='idea-detail'),
+    path('idea/<int:pk>/', views.IdeaDetailView, name='idea-detail'),
     path('idea/new', IdeaCreateView.as_view(), name='idea-create'),
     path('idea/<int:pk>/update', IdeaUpdateView.as_view(), name='idea-update'),
     path('idea/<int:pk>/delete', IdeaDeleteView.as_view(), name='idea-delete'),

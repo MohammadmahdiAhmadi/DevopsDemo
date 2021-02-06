@@ -25,47 +25,64 @@ class IdeaListView(ListView):
     paginate_by = 10
 
 
-class IdeaDetailView(DetailView):
-    model = Idea
+# class IdeaDetailView(DetailView):
+#     model = Idea
 
-    def get_context_data(self, **kwargs):
-        data = super().get_context_data(**kwargs)
-        thisIdea = get_object_or_404(Idea, id=self.kwargs['pk'])
+#     def get_context_data(self, **kwargs):
+#         data = super().get_context_data(**kwargs)
+#         thisIdea = get_object_or_404(Idea, id=self.kwargs['pk'])
 
+#         #Like button
+#         liked = False
+#         if thisIdea.likes.filter(id=self.request.user.id).exists():
+#             liked = True
 
-        #Like button
-        liked = False
-        if thisIdea.likes.filter(id=self.request.user.id).exists():
-            liked = True
-        data['number_of_likes'] = thisIdea.number_of_likes()
-        data['idea_is_liked'] = liked
+#         data['number_of_likes'] = thisIdea.number_of_likes()
+#         data['idea_is_liked'] = liked
 
-
-        #Comments
-        comments = thisIdea.comments.filter(active=True)
-        new_comment = None
-        
-        # Comment posted
-        if self.request.method == 'POST':
-            # comment_form = CommentForm(data=self.request.POST)
-            comment_form = CommentForm(self.request.POST, instance=self.request.POST)
-            if comment_form.is_valid():
-
-                # Create Comment object but don't save to database yet
-                new_comment = comment_form.save(commit=False)
-                # Assign the current idea to the comment
-                new_comment.Idea = thisIdea
-                # Save the comment to the database
-                new_comment.save()
-        else:
-            comment_form = CommentForm()
-
-        data['comments'] = comments
-        data['new_comment'] = new_comment
-        data['comment_form'] = comment_form
+#         return data
 
 
-        return data
+def IdeaDetailView(request, pk):
+    template_name = 'blog/idea_detail.html'
+    thisIdea = get_object_or_404(Idea, id=pk)
+
+    #Comment
+    comments = thisIdea.comments.filter(active=True)
+    new_comment = None
+    # Comment posted
+    if request.method == 'POST':
+        comment_form = CommentForm(data=request.POST)
+        if comment_form.is_valid():
+
+            # Create Comment object but don't save to database yet
+            new_comment = comment_form.save(commit=False)
+            # Assign the current post to the comment
+            new_comment.idea = thisIdea
+            # Save the comment to the database
+            new_comment.save()
+    else:
+        comment_form = CommentForm()
+
+
+    #Like button
+    liked = False
+    if thisIdea.likes.filter(id=request.user.id).exists():
+        liked = True
+
+    context = {
+        'object': thisIdea,
+
+        'comments': comments,
+        'new_comment': new_comment,
+        'comment_form': comment_form,
+
+        'number_of_likes': thisIdea.number_of_likes(),
+        'idea_is_liked': liked
+    }
+
+
+    return render(request, template_name, context)
 
 
 class IdeaCreateView(LoginRequiredMixin, CreateView):
