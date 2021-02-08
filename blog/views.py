@@ -180,12 +180,16 @@ def favorite(request):
         idea_id = request.GET['idea_id']
         favoriteIdea = Idea.objects.get(pk=idea_id) #getting the favorited idea
 
-        if favoriteIdea.favorited_by.filter(id=request.user.id).exists():
+        
+
+        if favoriteIdea in request.user.profile.favorites.all():
+            data = "UnSaved"
             favoriteIdea.favorited_by.remove(request.user.profile)
         else:
             favoriteIdea.favorited_by.add(request.user.profile)
+            data = "Saved"
                 
-        return HttpResponse("Saved") # Sending an success response
+        return HttpResponse(data) # Sending an success response
 
     else:
         return HttpResponse("Request method is not a GET")

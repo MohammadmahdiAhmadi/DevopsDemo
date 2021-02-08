@@ -1,6 +1,6 @@
 {% extends 'blog/base.html' %}
 {% block content %}
-    <h1 class="mb-3">Ideas by {{ view.kwargs.username }} ({{ page_obj.paginator.count }})</h1>
+    <h1 class="mb-3">Favorites</h1>
     {% for idea in ideas %}
         <article class="media content-section">
            <img class="rounded-circle article-img" src="{{ idea.author.profile.image.url }}">

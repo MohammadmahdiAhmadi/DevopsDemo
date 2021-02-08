@@ -51,6 +51,12 @@
       <p>{{ idea.comments.count }} <i class="far fa-comment"></i></p>
       <p>{{ idea.views }} <i class="fa fa-eye" style="font-size: 1em;"></i></p>
 
+      {% if idea in user.profile.favorites.all %}
+        <i class="fa fa-bookmark favorite" name="{{ idea.id }}" id="favorite{{idea.id}}" style="font-size: 1em;"></i>
+      {% else %}
+        <i class="fa fa-bookmark-o favorite" name="{{ idea.id }}" id="favorite{{idea.id}}" style="font-size: 1em;"></i>
+      {% endif %}
+
 
     </div>
     </article>
@@ -118,6 +124,30 @@
       })
 
     });
+    $('.favorite').click(function(){
+      var catid;
+      catid = $(this).attr("name");
+      $.ajax(
+        {
+         type:"GET",
+          url: "/favorite",
+
+         data:{
+           idea_id: catid
+         },
+
+         success: function( data ){
+           if(data == "Saved"){
+              $( '#favorite'+ catid ).removeClass("fa-bookmark-o");
+              $( '#favorite'+ catid ).addClass("fa-bookmark");
+           }
+           else{
+              $( '#favorite'+ catid ).removeClass("fa-bookmark");
+              $( '#favorite'+ catid ).addClass("fa-bookmark-o");
+           }
+          }
+      })
+      });
 
   </script>
   

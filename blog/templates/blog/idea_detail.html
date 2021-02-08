@@ -51,10 +51,9 @@
     <p>{{ object.views }} <i class="fa fa-eye" style="font-size: 1em;"></i></p>
 
     {% if object in user.profile.favorites.all %}
-      <p>Saved</p>
+      <i class="fa fa-bookmark favorite" name="{{ object.id }}" style="font-size: 1em;"></i>
     {% else %}
       <i class="fa fa-bookmark-o favorite" name="{{ object.id }}" style="font-size: 1em;"></i>
-      <p id="favorite{{object.id}}" ></p>
     {% endif %}
 
 
@@ -160,8 +159,14 @@
          },
 
          success: function( data ){
-           $( '.favorite' ).hide();
-           $( '#favorite'+ catid ).text(data);
+           if(data == "Saved"){
+              $( '.favorite' ).removeClass("fa-bookmark-o");
+              $( '.favorite' ).addClass("fa-bookmark");
+           }
+           else{
+              $( '.favorite' ).removeClass("fa-bookmark");
+              $( '.favorite' ).addClass("fa-bookmark-o");
+           }
           }
       })
 
