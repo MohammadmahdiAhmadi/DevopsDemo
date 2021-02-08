@@ -50,6 +50,13 @@
 
     <p>{{ object.views }} <i class="fa fa-eye" style="font-size: 1em;"></i></p>
 
+    {% if object in user.profile.favorites.all %}
+      <p>Saved</p>
+    {% else %}
+      <i class="fa fa-bookmark-o favorite" name="{{ object.id }}" style="font-size: 1em;"></i>
+      <p id="favorite{{object.id}}" ></p>
+    {% endif %}
+
 
     {% if object.author.username == user.username %}
         <a class="btn btn-secondary btn-sm mt-1 mb-1" href="{% url 'idea-update' object.id %}">Update</a>
@@ -136,6 +143,25 @@
 
          success: function( data ){
            $( '#dislike'+ catid ).text(data);
+          }
+      })
+
+    });
+    $('.favorite').click(function(){
+      var catid;
+      catid = $(this).attr("name");
+      $.ajax(
+        {
+         type:"GET",
+          url: "/favorite",
+
+         data:{
+           idea_id: catid
+         },
+
+         success: function( data ){
+           $( '.favorite' ).hide();
+           $( '#favorite'+ catid ).text(data);
           }
       })
 

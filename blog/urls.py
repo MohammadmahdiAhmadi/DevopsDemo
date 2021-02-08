@@ -21,4 +21,6 @@ urlpatterns = [
     path('about/', views.about, name = 'about'),
     path('likeIdea/', views.likeIdea, name='likeIdea'),
     path('dislikeIdea/', views.dislikeIdea, name='dislikeIdea'),
+    path('favorite/', views.favorite, name='favorite'),
+    path('idea-favorites/<str:username>/', views.FavoriteIdeaListView.as_view(), name='idea-favorites'),
 ]
