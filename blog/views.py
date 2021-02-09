@@ -12,8 +12,9 @@ from .models import Idea
 from django.contrib.auth.models import User
 
 from django.contrib.auth.decorators import login_required
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.urls import reverse
+from django.core import serializers
 
 from .forms import CommentForm
 
@@ -147,10 +148,18 @@ def likeIdea(request):
 
         if likedidea.likes.filter(id=request.user.id).exists():
             likedidea.likes.remove(request.user)
+            data = JsonResponse({
+                'result': 'Liked-1',
+                'number_of_likes': likedidea.number_of_likes(),
+            }, status=200, safe=False)
         else:
             likedidea.likes.add(request.user)
+            data = JsonResponse({
+                'result': 'Liked+1',
+                'number_of_likes': likedidea.number_of_likes(),
+            }, status=200, safe=False)
                 
-        return HttpResponse(likedidea.number_of_likes()) # Sending an success response
+        return data # Sending an success response
 
     else:
         return HttpResponse("Request method is not a GET")
@@ -165,10 +174,18 @@ def dislikeIdea(request):
 
         if dislikedidea.dislikes.filter(id=request.user.id).exists():
             dislikedidea.dislikes.remove(request.user)
+            data = JsonResponse({
+                'result': 'DisLiked-1',
+                'number_of_dislikes': dislikedidea.number_of_dislikes(),
+            }, status=200, safe=False)
         else:
             dislikedidea.dislikes.add(request.user)
+            data = JsonResponse({
+                'result': 'DisLiked+1',
+                'number_of_dislikes': dislikedidea.number_of_dislikes(),
+            }, status=200, safe=False)
                 
-        return HttpResponse(dislikedidea.number_of_dislikes()) # Sending an success response
+        return data # Sending an success response
 
     else:
         return HttpResponse("Request method is not a GET")

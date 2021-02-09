@@ -17,12 +17,24 @@
       {% if user.is_authenticated %}
 
         <div class="row">
+
           <div class="col-md-1">
-            <i class="fa fa-thumbs-up likebutton" name="{{ idea.id }}"></i>
+            {% if user in idea.likes.all %}
+              <i class="fa fa-thumbs-up likebutton" id="likebutton{{idea.id}}" name="{{ idea.id }}"></i>
+            {% else %}
+              <i class="far fa-thumbs-up likebutton" id="likebutton{{idea.id}}" name="{{ idea.id }}"></i>
+            {% endif %}
+
             <p id="like{{idea.id}}">{{ idea.likes.count }}</p>
           </div>
+
           <div class="col-md-1">
-            <i class="fa fa-thumbs-down dislikebutton" name="{{ idea.id }}"></i>
+            {% if user in idea.dislikes.all %}
+              <i class="fa fa-thumbs-down dislikebutton" id="dislikebutton{{idea.id}}" name="{{ idea.id }}"></i>
+            {% else %}
+              <i class="far fa-thumbs-down dislikebutton" id="dislikebutton{{idea.id}}" name="{{ idea.id }}"></i>
+            {% endif %}
+
             <p id="dislike{{idea.id}}">{{ idea.dislikes.count }}</p>
           </div>
 
@@ -101,7 +113,16 @@
          },
 
          success: function( data ){
-           $( '#like'+ catid ).text(data);
+           $( '#like'+ catid ).text(data["number_of_likes"]);
+
+           if(data["result"] == "Liked+1"){
+              $( '#likebutton'+ catid ).removeClass("far");
+              $( '#likebutton'+ catid ).addClass("fa");
+           }
+           else if(data["result"] == "Liked-1"){
+              $( '#likebutton'+ catid ).removeClass("fa");
+              $( '#likebutton'+ catid ).addClass("far");
+           }
           }
       })
 
@@ -119,7 +140,16 @@
          },
 
          success: function( data ){
-           $( '#dislike'+ catid ).text(data);
+           $( '#dislike'+ catid ).text(data["number_of_dislikes"]);
+
+           if(data["result"] == "DisLiked+1"){
+              $( '#dislikebutton'+ catid ).removeClass("far");
+              $( '#dislikebutton'+ catid ).addClass("fa");
+           }
+           else if(data["result"] == "DisLiked-1"){
+              $( '#dislikebutton'+ catid ).removeClass("fa");
+              $( '#dislikebutton'+ catid ).addClass("far");
+           }
           }
       })
 

@@ -18,14 +18,27 @@
     {% if user.is_authenticated %}
 
       <div class="row">
+      
         <div class="col-md-1">
-          <i class="fa fa-thumbs-up likebutton" name="{{ object.id }}"></i>
+          {% if user in object.likes.all %}
+            <i class="fa fa-thumbs-up likebutton" name="{{ object.id }}"></i>
+          {% else %}
+            <i class="far fa-thumbs-up likebutton" name="{{ object.id }}"></i>
+          {% endif %}
+
           <p id="like{{object.id}}">{{ number_of_likes }}</p>
         </div>
+
         <div class="col-md-1">
-          <i class="fa fa-thumbs-down dislikebutton" name="{{ object.id }}"></i>
+          {% if user in object.dislikes.all %}
+            <i class="fa fa-thumbs-down dislikebutton" name="{{ object.id }}"></i>
+          {% else %}
+            <i class="far fa-thumbs-down dislikebutton" name="{{ object.id }}"></i>
+          {% endif %}
+
           <p id="dislike{{object.id}}">{{ object.dislikes.count }}</p>
         </div>
+
       </div>
       
 
@@ -50,6 +63,7 @@
 
     <p>{{ object.views }} <i class="fa fa-eye" style="font-size: 1em;"></i></p>
 
+    
     {% if object in user.profile.favorites.all %}
       <i class="fa fa-bookmark favorite" name="{{ object.id }}" style="font-size: 1em;"></i>
     {% else %}
@@ -123,7 +137,16 @@
          },
 
          success: function( data ){
-           $( '#like'+ catid ).text(data);
+           $( '#like'+ catid ).text(data["number_of_likes"]);
+
+           if(data["result"] == "Liked+1"){
+              $( '.likebutton' ).removeClass("far");
+              $( '.likebutton' ).addClass("fa");
+           }
+           else if(data["result"] == "Liked-1"){
+              $( '.likebutton' ).removeClass("fa");
+              $( '.likebutton' ).addClass("far");
+           }
           }
       })
 
@@ -141,7 +164,16 @@
          },
 
          success: function( data ){
-           $( '#dislike'+ catid ).text(data);
+           $( '#dislike'+ catid ).text(data["number_of_dislikes"]);
+
+           if(data["result"] == "DisLiked+1"){
+              $( '.dislikebutton' ).removeClass("far");
+              $( '.dislikebutton' ).addClass("fa");
+           }
+           else if(data["result"] == "DisLiked-1"){
+              $( '.dislikebutton' ).removeClass("fa");
+              $( '.dislikebutton' ).addClass("far");
+           }
           }
       })
 
