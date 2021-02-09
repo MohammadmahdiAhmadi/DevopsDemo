@@ -2,19 +2,53 @@
 {% block content %}
     <h1 class="mb-3">Ideas by {{ view.kwargs.username }} ({{ page_obj.paginator.count }})</h1>
     {% for idea in ideas %}
-        <article class="media content-section">
-           <img class="rounded-circle article-img" src="{{ idea.author.profile.image.url }}">
-          <div class="media-body">
-            <div class="article-metadata">
+      <article class="media content-section">
+      <img class="rounded-circle article-img" src="{{ idea.author.profile.image.url }}">
+      <div class="media-body">
+          <div class="article-metadata">
               <a class="mr-2" href="{% url 'user-ideas' idea.author.username %}">{{ idea.author }}</a>
               <small class="text-muted">{{ idea.date_posted|date:"F d, Y" }}</small>
-            </div>
-            <h2><a class="article-title" href="{% url 'idea-detail' idea.id %}">{{ idea.title }}</a></h2>
-            <p class="article-content">{{ idea.content }}</p>
+              <small class="ml-3">{{ idea.views }} <i class="fa fa-eye" style="font-size: 1em;"></i></small>
+              <small class="ml-3">{{ idea.comments.count }} <i class="far fa-comment" style="font-size: 1em;"></i></small>
+
+              <ul class="mb-0 list-inline mt-3">
+            
+                {% if user.is_authenticated %}
+
+                  {% if idea in user.profile.favorites.all %}
+                    <li class="list-inline-item"><i class="fa fa-bookmark favorite" name="{{ idea.id }}" style="font-size: 170%;" id="favorite{{ idea.id }}"></i></li>
+                  {% else %}
+                    <li class="list-inline-item"><i class="fa fa-bookmark-o favorite" name="{{ idea.id }}" style="font-size: 170%;" id="favorite{{ idea.id }}"></i></li>
+                  {% endif %}
+
+                  {% if user in idea.likes.all %}
+                    <li class="list-inline-item"><i class="fa fa-thumbs-up likebutton" name="{{ idea.id }}" id="likebutton{{ idea.id }}"></i></li>
+                  {% else %}
+                    <li class="list-inline-item"><i class="far fa-thumbs-up likebutton" name="{{ idea.id }}" style="font-size: 170%;" id="likebutton{{ idea.id }}"></i></li>
+                  {% endif %}
+
+                  {% if user in idea.dislikes.all %}
+                    <li class="list-inline-item"><i class="fa fa-thumbs-down dislikebutton" name="{{ idea.id }}" id="dislikebutton{{ idea.id }}"></i></li>
+                  {% else %}
+                    <li class="list-inline-item"><i class="far fa-thumbs-down dislikebutton" name="{{ idea.id }}" style="font-size: 170%;" id="dislikebutton{{ idea.id }}"></i></li>
+                  {% endif %}
+
+                {% else %}
+                
+                      <li class="list-inline-item"><a href="/login"><i class="far fa-thumbs-up" style="font-size: 170%;"></i></a></li>
+                      <li class="list-inline-item"><a href="/login"><i class="far fa-thumbs-down" style="font-size: 170%;"></i></a></li>
+
+                {% endif %}
+
+              </ul>
           </div>
-        </article>
-        
-    {% endfor %}
+
+          <h2><a class="article-title" href="{% url 'idea-detail' idea.id %}">{{ idea.title }}</a></h2>
+          <p class="article-content">{{ idea.content }}</p>
+
+      </div>
+      </article>
+  {% endfor %}
 
     {% if is_paginated %}
     
@@ -40,3 +74,11 @@
 
     
 {% endblock content %}
+
+
+{% block javascript %}
+
+  {% load static %}
+   <script type="text/javascript" src="{% static 'blog/home.js' %}"></script> 
+  
+{% endblock javascript %}

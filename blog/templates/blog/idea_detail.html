@@ -8,73 +8,54 @@
 <img class="rounded-circle article-img" src="{{ object.author.profile.image.url }}">
 <div class="media-body">
     <div class="article-metadata">
-        <a class="mr-2" href="">{{ object.author }}</a>
+        <a class="mr-2" href="{% url 'user-ideas' object.author.username %}">{{ object.author }}</a>
         <small class="text-muted">{{ object.date_posted|date:"F d, Y" }}</small>
+        <small class="ml-3">{{ object.views }} <i class="fa fa-eye" style="font-size: 1em;"></i></small>
+
+        <ul class="mb-0 list-inline mt-3">
+          
+          {% if user.is_authenticated %}
+
+            {% if object in user.profile.favorites.all %}
+              <li class="list-inline-item"><i class="fa fa-bookmark favorite" name="{{ object.id }}" style="font-size: 170%;"></i></li>
+            {% else %}
+              <li class="list-inline-item"><i class="fa fa-bookmark-o favorite" name="{{ object.id }}" style="font-size: 170%;"></i></li>
+            {% endif %}
+
+            {% if user in object.likes.all %}
+              <li class="list-inline-item"><i class="fa fa-thumbs-up likebutton" name="{{ object.id }}"></i></li>
+            {% else %}
+              <li class="list-inline-item"><i class="far fa-thumbs-up likebutton" name="{{ object.id }}" style="font-size: 170%;"></i></li>
+            {% endif %}
+
+            {% if user in object.dislikes.all %}
+              <li class="list-inline-item"><i class="fa fa-thumbs-down dislikebutton" name="{{ object.id }}"></i></li>
+            {% else %}
+              <li class="list-inline-item"><i class="far fa-thumbs-down dislikebutton" name="{{ object.id }}" style="font-size: 170%;"></i></li>
+            {% endif %}
+
+          {% else %}
+          
+                <li class="list-inline-item"><a href="/login"><i class="far fa-thumbs-up" style="font-size: 170%;"></i></a></li>
+                <li class="list-inline-item"><a href="/login"><i class="far fa-thumbs-down" style="font-size: 170%;"></i></a></li>
+
+          {% endif %}
+
+          
+          {% comment %} <p id="like{{object.id}}">{{ number_of_likes }}</p> {% endcomment %}
+          {% comment %} <p id="dislike{{object.id}}">{{ object.dislikes.count }}</p> {% endcomment %}
+
+        </ul>
     </div>
+
     <h2><a class="article-title" href="">{{ object.title }}</a></h2>
     <p class="article-content">{{ object.content }}</p>
-
-
-    {% if user.is_authenticated %}
-
-      <div class="row">
-      
-        <div class="col-md-1">
-          {% if user in object.likes.all %}
-            <i class="fa fa-thumbs-up likebutton" name="{{ object.id }}"></i>
-          {% else %}
-            <i class="far fa-thumbs-up likebutton" name="{{ object.id }}"></i>
-          {% endif %}
-
-          <p id="like{{object.id}}">{{ number_of_likes }}</p>
-        </div>
-
-        <div class="col-md-1">
-          {% if user in object.dislikes.all %}
-            <i class="fa fa-thumbs-down dislikebutton" name="{{ object.id }}"></i>
-          {% else %}
-            <i class="far fa-thumbs-down dislikebutton" name="{{ object.id }}"></i>
-          {% endif %}
-
-          <p id="dislike{{object.id}}">{{ object.dislikes.count }}</p>
-        </div>
-
-      </div>
-      
-
-    {% else %}
-
-        <div class="row">
-        <div class="col-md-1">
-          <a href="/login">
-            <i class="fa fa-thumbs-up"></i>
-          </a>
-          <p>{{ number_of_likes }}</p>
-        </div>
-        <div class="col-md-1">
-          <a href="/login">
-            <i class="fa fa-thumbs-down"></i>
-          </a>
-          <p>{{ object.dislikes.count }}</p>
-        </div>
-        </div>
-
-    {% endif %}
-
-    <p>{{ object.views }} <i class="fa fa-eye" style="font-size: 1em;"></i></p>
-
-    
-    {% if object in user.profile.favorites.all %}
-      <i class="fa fa-bookmark favorite" name="{{ object.id }}" style="font-size: 1em;"></i>
-    {% else %}
-      <i class="fa fa-bookmark-o favorite" name="{{ object.id }}" style="font-size: 1em;"></i>
-    {% endif %}
-
 
     {% if object.author.username == user.username %}
         <a class="btn btn-secondary btn-sm mt-1 mb-1" href="{% url 'idea-update' object.id %}">Update</a>
         <a class="btn btn-danger btn-sm mt-1 mb-1" href="{% url 'idea-delete' object.id %}">Delete</a>
     {% endif %}
+
 </div>
 </article>
 
@@ -123,87 +104,8 @@
 {% endblock content %}
 
 {% block javascript %}
-  <script type="text/javascript">
-    $('.likebutton').click(function(){
-      var catid;
-      catid = $(this).attr("name");
-      $.ajax(
-        {
-         type:"GET",
-          url: "/likeIdea",
 
-         data:{
-           idea_id: catid
-         },
-
-         success: function( data ){
-           $( '#like'+ catid ).text(data["number_of_likes"]);
-
-           if(data["result"] == "Liked+1"){
-              $( '.likebutton' ).removeClass("far");
-              $( '.likebutton' ).addClass("fa");
-           }
-           else if(data["result"] == "Liked-1"){
-              $( '.likebutton' ).removeClass("fa");
-              $( '.likebutton' ).addClass("far");
-           }
-          }
-      })
-
-    });
-    $('.dislikebutton').click(function(){
-      var catid;
-      catid = $(this).attr("name");
-      $.ajax(
-        {
-         type:"GET",
-          url: "/dislikeIdea",
-
-         data:{
-           idea_id: catid
-         },
-
-         success: function( data ){
-           $( '#dislike'+ catid ).text(data["number_of_dislikes"]);
-
-           if(data["result"] == "DisLiked+1"){
-              $( '.dislikebutton' ).removeClass("far");
-              $( '.dislikebutton' ).addClass("fa");
-           }
-           else if(data["result"] == "DisLiked-1"){
-              $( '.dislikebutton' ).removeClass("fa");
-              $( '.dislikebutton' ).addClass("far");
-           }
-          }
-      })
-
-    });
-    $('.favorite').click(function(){
-      var catid;
-      catid = $(this).attr("name");
-      $.ajax(
-        {
-         type:"GET",
-          url: "/favorite",
-
-         data:{
-           idea_id: catid
-         },
-
-         success: function( data ){
-           if(data == "Saved"){
-              $( '.favorite' ).removeClass("fa-bookmark-o");
-              $( '.favorite' ).addClass("fa-bookmark");
-           }
-           else{
-              $( '.favorite' ).removeClass("fa-bookmark");
-              $( '.favorite' ).addClass("fa-bookmark-o");
-           }
-          }
-      })
-
-    });
-
-  </script>
+  {% load static %}
+  <script type="text/javascript" src="{% static 'blog/idea_detail.js' %}"></script> 
   
 {% endblock javascript %}

@@ -9,70 +9,51 @@
         <div class="article-metadata">
             <a class="mr-2" href="{% url 'user-ideas' idea.author.username %}">{{ idea.author }}</a>
             <small class="text-muted">{{ idea.date_posted|date:"F d, Y" }}</small>
+            <small class="ml-3">{{ idea.views }} <i class="fa fa-eye" style="font-size: 1em;"></i></small>
+            <small class="ml-3">{{ idea.comments.count }} <i class="far fa-comment" style="font-size: 1em;"></i></small>
+
+            <ul class="mb-0 list-inline mt-3">
+          
+              {% if user.is_authenticated %}
+
+                {% if idea in user.profile.favorites.all %}
+                  <li class="list-inline-item"><i class="fa fa-bookmark favorite" name="{{ idea.id }}" style="font-size: 170%;" id="favorite{{ idea.id }}"></i></li>
+                {% else %}
+                  <li class="list-inline-item"><i class="fa fa-bookmark-o favorite" name="{{ idea.id }}" style="font-size: 170%;" id="favorite{{ idea.id }}"></i></li>
+                {% endif %}
+
+                {% if user in idea.likes.all %}
+                  <li class="list-inline-item"><i class="fa fa-thumbs-up likebutton" name="{{ idea.id }}" id="likebutton{{ idea.id }}"></i></li>
+                {% else %}
+                  <li class="list-inline-item"><i class="far fa-thumbs-up likebutton" name="{{ idea.id }}" style="font-size: 170%;" id="likebutton{{ idea.id }}"></i></li>
+                {% endif %}
+
+                {% if user in idea.dislikes.all %}
+                  <li class="list-inline-item"><i class="fa fa-thumbs-down dislikebutton" name="{{ idea.id }}" id="dislikebutton{{ idea.id }}"></i></li>
+                {% else %}
+                  <li class="list-inline-item"><i class="far fa-thumbs-down dislikebutton" name="{{ idea.id }}" style="font-size: 170%;" id="dislikebutton{{ idea.id }}"></i></li>
+                {% endif %}
+
+              {% else %}
+              
+                    <li class="list-inline-item"><a href="/login"><i class="far fa-thumbs-up" style="font-size: 170%;"></i></a></li>
+                    <li class="list-inline-item"><a href="/login"><i class="far fa-thumbs-down" style="font-size: 170%;"></i></a></li>
+
+              {% endif %}
+
+            </ul>
         </div>
+
         <h2><a class="article-title" href="{% url 'idea-detail' idea.id %}">{{ idea.title }}</a></h2>
         <p class="article-content">{{ idea.content }}</p>
 
-
-      {% if user.is_authenticated %}
-
-        <div class="row">
-
-          <div class="col-md-1">
-            {% if user in idea.likes.all %}
-              <i class="fa fa-thumbs-up likebutton" id="likebutton{{idea.id}}" name="{{ idea.id }}"></i>
-            {% else %}
-              <i class="far fa-thumbs-up likebutton" id="likebutton{{idea.id}}" name="{{ idea.id }}"></i>
-            {% endif %}
-
-            <p id="like{{idea.id}}">{{ idea.likes.count }}</p>
-          </div>
-
-          <div class="col-md-1">
-            {% if user in idea.dislikes.all %}
-              <i class="fa fa-thumbs-down dislikebutton" id="dislikebutton{{idea.id}}" name="{{ idea.id }}"></i>
-            {% else %}
-              <i class="far fa-thumbs-down dislikebutton" id="dislikebutton{{idea.id}}" name="{{ idea.id }}"></i>
-            {% endif %}
-
-            <p id="dislike{{idea.id}}">{{ idea.dislikes.count }}</p>
-          </div>
-
-        </div>
         
-
-      {% else %}
-
-          <div class="row">
-          <div class="col-md-1">
-            <a href="/login">
-              <i class="fa fa-thumbs-up"></i>
-            </a>
-            <p>{{ idea.likes.count }}</p>
-          </div>
-          <div class="col-md-1">
-            <a href="/login">
-              <i class="fa fa-thumbs-down"></i>
-            </a>
-            <p>{{ idea.dislikes.count }}</p>
-          </div>
-          </div>
-          
-      {% endif %}
-
-      <p>{{ idea.comments.count }} <i class="far fa-comment"></i></p>
-      <p>{{ idea.views }} <i class="fa fa-eye" style="font-size: 1em;"></i></p>
-
-      {% if idea in user.profile.favorites.all %}
-        <i class="fa fa-bookmark favorite" name="{{ idea.id }}" id="favorite{{idea.id}}" style="font-size: 1em;"></i>
-      {% else %}
-        <i class="fa fa-bookmark-o favorite" name="{{ idea.id }}" id="favorite{{idea.id}}" style="font-size: 1em;"></i>
-      {% endif %}
 
 
     </div>
     </article>
 {% endfor %}
+
 {% if is_paginated %}
 
       {% if page_obj.has_previous %}
@@ -99,87 +80,9 @@
 
 
 {% block javascript %}
-  <script type="text/javascript">
-    $('.likebutton').click(function(){
-      var catid;
-      catid = $(this).attr("name");
-      $.ajax(
-        {
-         type:"GET",
-          url: "/likeIdea",
 
-         data:{
-           idea_id: catid
-         },
-
-         success: function( data ){
-           $( '#like'+ catid ).text(data["number_of_likes"]);
-
-           if(data["result"] == "Liked+1"){
-              $( '#likebutton'+ catid ).removeClass("far");
-              $( '#likebutton'+ catid ).addClass("fa");
-           }
-           else if(data["result"] == "Liked-1"){
-              $( '#likebutton'+ catid ).removeClass("fa");
-              $( '#likebutton'+ catid ).addClass("far");
-           }
-          }
-      })
-
-    });
-    $('.dislikebutton').click(function(){
-      var catid;
-      catid = $(this).attr("name");
-      $.ajax(
-        {
-         type:"GET",
-          url: "/dislikeIdea",
-
-         data:{
-           idea_id: catid
-         },
-
-         success: function( data ){
-           $( '#dislike'+ catid ).text(data["number_of_dislikes"]);
-
-           if(data["result"] == "DisLiked+1"){
-              $( '#dislikebutton'+ catid ).removeClass("far");
-              $( '#dislikebutton'+ catid ).addClass("fa");
-           }
-           else if(data["result"] == "DisLiked-1"){
-              $( '#dislikebutton'+ catid ).removeClass("fa");
-              $( '#dislikebutton'+ catid ).addClass("far");
-           }
-          }
-      })
-
-    });
-    $('.favorite').click(function(){
-      var catid;
-      catid = $(this).attr("name");
-      $.ajax(
-        {
-         type:"GET",
-          url: "/favorite",
-
-         data:{
-           idea_id: catid
-         },
-
-         success: function( data ){
-           if(data == "Saved"){
-              $( '#favorite'+ catid ).removeClass("fa-bookmark-o");
-              $( '#favorite'+ catid ).addClass("fa-bookmark");
-           }
-           else{
-              $( '#favorite'+ catid ).removeClass("fa-bookmark");
-              $( '#favorite'+ catid ).addClass("fa-bookmark-o");
-           }
-          }
-      })
-      });
-
-  </script>
+  {% load static %}
+   <script type="text/javascript" src="{% static 'blog/home.js' %}"></script> 
   
 {% endblock javascript %}
 
