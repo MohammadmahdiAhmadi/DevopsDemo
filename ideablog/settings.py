@@ -23,9 +23,9 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = 'kdqor=3paqz*ixssz(he4q&6kt%rs27@awva$b!otqo$l1fzg$'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
-ALLOWED_HOSTS = ['ideablog-mmahmadi.fandogh.cloud',]
+ALLOWED_HOSTS = ['ideablog-mmahmadi.fandogh.cloud','127.0.0.1']
 
 
 # Application definition
@@ -121,6 +121,9 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/1.11/howto/static-files/
 
 STATIC_URL = '/static/'
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, 'static'),
+]
 STATIC_ROOT = os.path.join(BASE_DIR, 'static_root/')
 
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')

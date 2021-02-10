@@ -1,0 +1,15 @@
+kind: ExternalService
+name: !!python/unicode 'ideablog'
+spec:
+  image_pull_policy: Always
+  port: 80
+  source:
+    context: !!python/unicode '.'
+    !!python/unicode 'media_path': !!python/unicode 'media'
+    project_type: !!python/unicode 'django'
+    !!python/unicode 'python_version': !!python/unicode '3.7'
+    !!python/unicode 'static_path': !!python/unicode 'static_root'
+    !!python/unicode 'wsgi': !!python/unicode 'ideablog.wsgi'
+  volume_mounts:
+  - mount_path: !!python/unicode '/usr/src/app/media'
+    sub_path: !!python/unicode 'ideablog/media'
