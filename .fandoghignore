@@ -1,11 +1,11 @@
-venv/
-venv
-*.mo
-db.sqlite3
+.git
 __pycache__/
+db.sqlite3
+.env
 *.pyc
 *.log
-.git
-.env
+venv
+venv/
 *.pot
+*.mo
 local_settings.py

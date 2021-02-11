@@ -23,7 +23,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = 'kdqor=3paqz*ixssz(he4q&6kt%rs27@awva$b!otqo$l1fzg$'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ['ideablog-mmahmadi.fandogh.cloud','127.0.0.1']
 
