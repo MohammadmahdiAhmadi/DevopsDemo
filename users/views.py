@@ -3,17 +3,39 @@ from django.contrib import messages
 from .forms import UserRegisterForm, UserUpdateForm, ProfileUpdateForm
 from django.contrib.auth.decorators import login_required
 
+import json
+import urllib
+from ideablog import settings
+
 def register(request):
     if request.method == 'POST':
         form = UserRegisterForm(request.POST)
         if form.is_valid():
-            form.save()
 
-            username = form.cleaned_data.get('username')
-            messages.success(request, f'Your account has been created! You are now able to log in {username}!')
-            # return redirect('login')
+            ''' Begin reCAPTCHA validation '''
+            recaptcha_response = request.POST.get('g-recaptcha-response')
+            url = 'https://www.google.com/recaptcha/api/siteverify'
+            values = {
+                'secret': settings.GOOGLE_RECAPTCHA_SECRET_KEY,
+                'response': recaptcha_response
+            }
+            data = urllib.parse.urlencode(values).encode()
+            req =  urllib.request.Request(url, data=data)
+            response = urllib.request.urlopen(req)
+            result = json.loads(response.read().decode())
+            ''' End reCAPTCHA validation '''
+
+            if result['success']:
+                form.save()
+                username = form.cleaned_data.get('username')
+                messages.success(request, f'Your account has been created! You are now able to log in {username}!')
+                return redirect('login')
+            else:
+                messages.error(request, 'Invalid reCAPTCHA. Please try again.')
+                
     else:
         form = UserRegisterForm()
+        
     return render(request, 'users/register.html', {'form': form})
 
 

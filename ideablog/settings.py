@@ -23,7 +23,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = 'kdqor=3paqz*ixssz(he4q&6kt%rs27@awva$b!otqo$l1fzg$'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = ['ideablog-mmahmadi.fandogh.cloud','127.0.0.1']
 
@@ -133,3 +133,5 @@ CRISPY_TEMPLATE_PACK = 'bootstrap4'
 
 LOGIN_REDIRECT_URL = 'home'
 LOGIN_URL = 'login'
+
+GOOGLE_RECAPTCHA_SECRET_KEY = '6LecfFQaAAAAAOSweEjXvQcyawKgPUuVk3jjKVlG'

@@ -7,6 +7,10 @@
             <fieldset class="form-group">
                 <legend class="border-bottom mb-4">Join Today</legend>
                 {{ form|crispy }}
+
+                <script src='https://www.google.com/recaptcha/api.js'></script>
+                <div class="g-recaptcha" data-sitekey="6LecfFQaAAAAAGBHohrRLEurjSLTU6FlXtco7HPp"></div>
+
             </fieldset>
             <div class="form-group">
                 <button class="btn btn-outline-info" type="submit">Sign Up</button>
