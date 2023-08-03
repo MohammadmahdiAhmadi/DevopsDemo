@@ -18,30 +18,13 @@ from django.core import serializers
 
 from .forms import CommentForm
 
+
 class IdeaListView(ListView):
     model = Idea
     template_name = 'blog/home.html'
     context_object_name = 'ideas'
     ordering = ['-date_posted']
     paginate_by = 5
-
-
-# class IdeaDetailView(DetailView):
-#     model = Idea
-
-#     def get_context_data(self, **kwargs):
-#         data = super().get_context_data(**kwargs)
-#         thisIdea = get_object_or_404(Idea, id=self.kwargs['pk'])
-
-#         #Like button
-#         liked = False
-#         if thisIdea.likes.filter(id=self.request.user.id).exists():
-#             liked = True
-
-#         data['number_of_likes'] = thisIdea.number_of_likes()
-#         data['idea_is_liked'] = liked
-
-#         return data
 
 
 def IdeaDetailView(request, pk):
