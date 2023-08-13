@@ -1,0 +1,12 @@
+version: 3.8
+
+services:
+  web:
+    build: .
+    command: gunicorn --chdir ideablog --bind :8005 --timeout 300 ideablog.wsgi:application
+    volumes:
+      - ./:/usr/src/ideablog/
+    ports:
+      - 8005:8005
+    env_file:
+      - ./.env.dev
