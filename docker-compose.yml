@@ -1,12 +1,31 @@
-version: 3.8
+version: '3.8'
 
 services:
-  web:
-    build: .
+  back:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    working_dir: /usr/src/ideablog
     command: gunicorn --chdir ideablog --bind :8005 --timeout 300 ideablog.wsgi:application
-    volumes:
-      - ./:/usr/src/ideablog/
     ports:
       - 8005:8005
+    networks:
+      - ideablog-net
+    volumes:
+      - db_data:/usr/scr/ideablog/db.sqlite3
+    entrypoint: /usr/src/ideablog/entrypoint.sh
     env_file:
-      - ./.env.dev
+      - /usr/src/ideablog/.env
+    restart: unless-stopped
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "5"
+
+networks:
+  ideablog-net:
+    driver: bridge
+
+volumes:
+  db_data:
