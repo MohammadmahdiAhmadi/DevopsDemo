@@ -19,3 +19,7 @@ Docker compose:
 
 docker-compose up -d
 docker-compose down -v
+
+
+# ToDo
+1. Fix static files bug in docker
