@@ -5,14 +5,13 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
+    image: mmahmadi0101/ideablog
     working_dir: /usr/src/ideablog
     entrypoint: /usr/src/ideablog/entrypoint.sh
     ports:
       - 8005:8005
     networks:
       - net
-    volumes:
-      - db_data:/usr/scr/ideablog/db.sqlite3
     env_file:
       - .env
     restart: unless-stopped
@@ -25,6 +24,3 @@ services:
 networks:
   net:
     driver: bridge
-
-volumes:
-  db_data:
