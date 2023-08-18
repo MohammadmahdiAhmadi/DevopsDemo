@@ -23,3 +23,20 @@ docker-compose down -v
 
 # ToDo
 1. Fix static files bug in docker
+
+
+
+docker run -d \
+  --name ideablog-back \
+  -p 8005:8005 \
+  -e DEBUG='1' \
+  -e SECRET_KEY='SECRET_KEY' \
+  -e DJANGO_ALLOWED_HOSTS='localhost,127.0.0.1,[::1],ideablog.fesenjoon.xyz' \
+  mmahmadi0101/ideablog:latest
+
+
+# Some temp commands
+kubectl logs -f ingress-nginx-controller-6cc5ccb977-9djf8 -n ingress-nginx
+openssl req -x509 -newkey rsa:4096 -keyout tls.key -out tls.crt -days 365 -nodes -subj "/CN=ideablog.com"
+minikube addons enable ingress
+minikube ip

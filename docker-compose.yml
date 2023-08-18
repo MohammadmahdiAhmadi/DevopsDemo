@@ -7,7 +7,6 @@ services:
       dockerfile: Dockerfile
     image: mmahmadi0101/ideablog
     working_dir: /usr/src/ideablog
-    entrypoint: /usr/src/ideablog/entrypoint.sh
     ports:
       - 8005:8005
     networks:
@@ -20,6 +19,17 @@ services:
       options:
         max-size: "10m"
         max-file: "5"
+  db:
+    image: postgres:15
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+    environment:
+      - POSTGRES_USER=pguser_django
+      - POSTGRES_PASSWORD=pgpassword_django
+      - POSTGRES_DB=pgdb_dajngo
+
+volumes:
+  postgres_data:
 
 networks:
   net:

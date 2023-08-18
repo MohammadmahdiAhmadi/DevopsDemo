@@ -14,4 +14,7 @@ RUN pip install -r requirements.txt
 
 COPY . .
 
-RUN chmod +x entrypoint.sh
+EXPOSE 8005
+
+RUN chmod +x /usr/src/ideablog/entrypoint.sh
+ENTRYPOINT [ "/usr/src/ideablog/entrypoint.sh" ]
