@@ -18,3 +18,5 @@ EXPOSE 8005
 
 RUN chmod +x /usr/src/ideablog/entrypoint.sh
 ENTRYPOINT [ "/usr/src/ideablog/entrypoint.sh" ]
+
+CMD ["gunicorn", "--chdir", "ideablog", "--bind", ":8005", "--timeout", "300", "ideablog.wsgi:application"]
