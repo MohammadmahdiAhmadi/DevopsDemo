@@ -10,7 +10,7 @@ services:
     ports:
       - 8005:8005
     networks:
-      - net
+      - ideablog_network
     env_file:
       - .env
     restart: unless-stopped
@@ -21,8 +21,6 @@ services:
         max-file: "5"
     depends_on:
       - db
-    links:
-        - db:db
   db:
     image: postgres:15
     volumes:
@@ -32,11 +30,11 @@ services:
       - POSTGRES_PASSWORD=pgpassword_django
       - POSTGRES_DB=pgdb_dajngo
     networks:
-      - net
+      - ideablog_network
 
 volumes:
   postgres_data:
 
 networks:
-  net:
+  ideablog_network:
     driver: bridge
