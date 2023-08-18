@@ -4,6 +4,7 @@ from .forms import UserRegisterForm, UserUpdateForm, ProfileUpdateForm
 from django.contrib.auth.decorators import login_required
 from .models import Profile
 
+from urllib import request as reqlib
 import json
 import urllib
 from ideablog import settings
@@ -25,8 +26,8 @@ def register(request):
                 'response': recaptcha_response
             }
             data = urllib.parse.urlencode(values).encode()
-            req =  urllib.request.Request(url, data=data)
-            response = urllib.request.urlopen(req)
+            req =  reqlib.Request(url, data=data)
+            response = reqlib.urlopen(req)
             result = json.loads(response.read().decode())
             ''' End reCAPTCHA validation '''
 
@@ -68,3 +69,4 @@ def profile(request):
     }
         
     return render(request, 'users/profile.html', context)
+
