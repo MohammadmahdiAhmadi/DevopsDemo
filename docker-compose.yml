@@ -19,6 +19,10 @@ services:
       options:
         max-size: "10m"
         max-file: "5"
+    depends_on:
+      - db
+    links:
+        - db:db
   db:
     image: postgres:15
     volumes:
@@ -27,6 +31,8 @@ services:
       - POSTGRES_USER=pguser_django
       - POSTGRES_PASSWORD=pgpassword_django
       - POSTGRES_DB=pgdb_dajngo
+    networks:
+      - net
 
 volumes:
   postgres_data:
