@@ -20,9 +20,13 @@ services:
         max-size: "10m"
         max-file: "5"
     depends_on:
-      - db
+      - haproxy
+
   db:
     image: postgres:15
+    command: ["postgres", "-c", "log_statement=all"]
+    ports:
+      - 5433:5432
     volumes:
       - postgres_data:/var/lib/postgresql/data/
     environment:
@@ -31,6 +35,18 @@ services:
       - POSTGRES_DB=pgdb_dajngo
     networks:
       - ideablog_network
+     
+  haproxy:
+    image: haproxy:2.4
+    volumes:
+      - ./haproxy.cfg:/usr/local/etc/haproxy/haproxy.cfg:ro
+    ports:
+      - 5432:5432
+    networks:
+      - ideablog_network
+    depends_on:
+      - db
+
 
 volumes:
   postgres_data:
@@ -38,3 +54,4 @@ volumes:
 networks:
   ideablog_network:
     driver: bridge
+

@@ -22,7 +22,7 @@ docker-compose down -v
 
 
 # ToDo
-1. Fix static files bug in docker
+1. For now, we only have one db server in Haproxy load balancer. Create more replica servers and make RW and RO rules.
 
 
 
