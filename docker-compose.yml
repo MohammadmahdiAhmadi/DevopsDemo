@@ -12,7 +12,7 @@ services:
     networks:
       - ideablog_network
     env_file:
-      - .env
+      - .env.dev
     restart: unless-stopped
     logging:
       driver: "json-file"
@@ -22,34 +22,34 @@ services:
     depends_on:
       - haproxy
 
-  db:
-    image: postgres:15
-    command: ["postgres", "-c", "log_statement=all"]
-    ports:
-      - 5433:5432
-    volumes:
-      - postgres_data:/var/lib/postgresql/data/
-    environment:
-      - POSTGRES_USER=pguser_django
-      - POSTGRES_PASSWORD=pgpassword_django
-      - POSTGRES_DB=pgdb_dajngo
-    networks:
-      - ideablog_network
+#   db:
+#     image: postgres:15
+#     command: ["postgres", "-c", "log_statement=all"]
+#     ports:
+#       - 5433:5432
+#     volumes:
+#       - postgres_data:/var/lib/postgresql/data/
+#     environment:
+#       - POSTGRES_USER=pguser_django
+#       - POSTGRES_PASSWORD=pgpassword_django
+#       - POSTGRES_DB=pgdb_dajngo
+#     networks:
+#       - ideablog_network
      
-  haproxy:
-    image: haproxy:2.4
-    volumes:
-      - ./haproxy.cfg:/usr/local/etc/haproxy/haproxy.cfg:ro
-    ports:
-      - 5432:5432
-    networks:
-      - ideablog_network
-    depends_on:
-      - db
+#   haproxy:
+#     image: haproxy:2.4
+#     volumes:
+#       - ./haproxy.cfg:/usr/local/etc/haproxy/haproxy.cfg:ro
+#     ports:
+#       - 5432:5432
+#     networks:
+#       - ideablog_network
+#     depends_on:
+#       - db
 
 
-volumes:
-  postgres_data:
+# volumes:
+#   postgres_data:
 
 networks:
   ideablog_network:
