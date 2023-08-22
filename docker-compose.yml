@@ -19,8 +19,8 @@ services:
       options:
         max-size: "10m"
         max-file: "5"
-    depends_on:
-      - haproxy
+    # depends_on:
+    #   - haproxy
 
 #   db:
 #     image: postgres:15
