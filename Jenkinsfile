@@ -26,7 +26,6 @@ pipeline {
         stage('Build and Run Container') {
             steps {
                 script {
-                    sh 'echo ${REGISTRY_USERNAME}'
                     sh 'docker-compose up -d --build'
                     containerID = sh(script: 'docker-compose ps -q back', returnStdout: true).trim()
                 }
@@ -49,8 +48,7 @@ pipeline {
                 script {
                     sh """
                         echo ${REGISTRY_PASSWORD} | docker login -u ${REGISTRY_USERNAME} --password-stdin
-                        docker push ${REGISTRY}:${BUILD_NUMBER}
-                        docker tag ${REGISTRY}:${BUILD_NUMBER} ${REGISTRY}:latest
+                        docker tag ${REGISTRY} ${REGISTRY}:latest
                         docker push ${REGISTRY}:latest
                     """
                 }
@@ -62,7 +60,6 @@ pipeline {
         always {
             sh '''
                 docker-compose down
-                docker rmi ${REGISTRY}:${BUILD_NUMBER}
                 docker rmi ${REGISTRY}:latest
                 docker logout
             '''
@@ -70,3 +67,4 @@ pipeline {
         }
     }
 }
+
