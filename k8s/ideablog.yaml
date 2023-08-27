@@ -1,0 +1,54 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ideablog-app
+  labels:
+    app: ideablog
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ideablog
+  template:
+    metadata:
+      labels:
+        app: ideablog
+    spec:
+      containers:
+        - image: mmahmadi0101/ideablog:latest
+          name: ideablog
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8005
+              name: gunicorn
+          resources:
+            requests:
+              cpu: "100m"      # 100 milliCPU (0.1 CPU)
+              memory: "256Mi"  # 256 Megabytes
+            limits:
+              cpu: "200m"      # 200 milliCPU (0.2 CPU)
+              memory: "512Mi"  # 512 Megabytes
+          envFrom:
+          - secretRef:
+              name: ideablog-secret
+          - configMapRef:
+              name: ideablog-config
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: ideablog
+  labels:
+    app: ideablog
+spec:
+  # type: NodePort
+  type: ClusterIP
+  selector:
+    app: ideablog
+  ports:
+    - protocol: TCP
+      port: 8005
+      targetPort: 8005
+      # nodePort: 30222
