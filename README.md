@@ -1,6 +1,6 @@
-# Idea Blog
+# DevOps Demo
 
-Welcome to the **IdeaBlog** repository! This project is a comprehensive example that demonstrates various aspects of modern web development, including Django-based application development, Docker containerization, Ansible automation, Jenkins CI/CD integration, and Kubernetes deployment.
+Welcome to the **DevOpsDemo** repository! This project is a comprehensive example that demonstrates various aspects of modern web development, including Django-based application development, Docker containerization, Ansible automation, Jenkins CI/CD integration, and Kubernetes deployment.
 
 ## Table of Contents
 
